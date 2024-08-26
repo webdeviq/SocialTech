@@ -55,6 +55,7 @@ const Post: React.FC<Props> = (props: Props) => {
       </CardContent>
       <CardActions>
         <ThumbUpOffAltOutlinedIcon
+          fill="outlined"
           onClick={() => console.log("Post Liked")}
           fontSize="large"
           sx={{ mr: 5, cursor: "pointer" }}
