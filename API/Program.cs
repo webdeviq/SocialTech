@@ -15,6 +15,7 @@ builder.Services.AddDbContext<SocialTechContext>(options =>
     ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection")));
 });
 
+builder.Services.AddCors();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,7 +25,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseCors(opt => { opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3001"); });
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
@@ -35,18 +37,18 @@ var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<SocialTechContext>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-try
-{
+// try
+// {
 
-    context.Database.Migrate();
+//     context.Database.Migrate();
 
-    DbInitalizer.Initialize(context);
-    Console.WriteLine("Database seeded succesfully.");
-}
-catch (Exception exception)
-{
-    logger.LogError(exception, "An error occured with the database migration.");
+//     DbInitalizer.Initialize(context);
+//     Console.WriteLine("Database seeded succesfully.");
+// }
+// catch (Exception exception)
+// {
+//     logger.LogError(exception, "An error occured with the database migration.");
 
-}
+// }
 
 app.Run();

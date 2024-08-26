@@ -15,8 +15,5 @@ namespace API.Entities
         public int UserId { get; set; }
         public int Likes { get; set; }
         public CategoryEnum Category { get; set; }
-        // [ForeignKey("CategoryId")]
-        // public int CategoryId { get; set; }
-
     }
 }

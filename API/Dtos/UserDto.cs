@@ -1,17 +1,11 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace API.Entities
+namespace API.Dtos
 {
-    public class User
+    public class UserDto
     {
-        [Key]
         public int Id { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-
-        public ICollection<Post> Posts { get; set; } = new List<Post>();
-
 
     }
 }

@@ -8,9 +8,9 @@ namespace API.Data
         public static void Initialize(SocialTechContext context)
         {
 
-            // if (context.Users.Any()) return;
+            if (context.Users.Any()) return;
             if (context.Posts.Any()) return;
-            //if (context.Categories.Any()) return;
+            
 
             //     List<Category> categories = new() {
             //     new Category {CategoryEnum = CategoryEnum.REACT},
