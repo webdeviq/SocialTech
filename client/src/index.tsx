@@ -1,17 +1,18 @@
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-
-import './styles.css'
-
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
+import { createRoot } from "react-dom/client";
 
 
-createRoot(document.getElementById('root')!).render(
+import "./styles.css";
+
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+
+import { RouterProvider } from "react-router-dom";
+import router from "./router/Routes.tsx";
+
+createRoot(document.getElementById("root")!).render(
   <>
-  <App/>
+    <RouterProvider router={router} />
   </>
-    
-)
+);

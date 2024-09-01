@@ -1,4 +1,4 @@
-import { PostCategory } from "../models/Post";
+import { PostCategory } from "../models/post";
 
 /**
  * @param category

@@ -28,10 +28,23 @@ export interface Post {
   postOwner: PostOwner;
   likes: number;
   category: PostCategory;
+  uploadedOn: string;
+  postAnswers: PostAnswer[];
 }
 
 export interface PostOwner {
   id: number;
   firstName: string;
   lastName: string;
+  email: string;
+}
+
+export interface PostAnswer {
+  id: number;
+  answer: string;
+  answerDate: string;
+  answerAccepted: boolean;
+  postId: number;
+  answeredBy: string;
+  answerAcceptedDate: string;
 }

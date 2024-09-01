@@ -1,9 +1,11 @@
 using API.Data;
+using API.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -19,6 +21,7 @@ builder.Services.AddCors();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -37,18 +40,18 @@ var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<SocialTechContext>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-// try
-// {
+try
+{
 
-//     context.Database.Migrate();
+    context.Database.Migrate();
 
-//     DbInitalizer.Initialize(context);
-//     Console.WriteLine("Database seeded succesfully.");
-// }
-// catch (Exception exception)
-// {
-//     logger.LogError(exception, "An error occured with the database migration.");
+    DbInitalizer.Initialize(context);
+    Console.WriteLine("Database seeded succesfully.");
+}
+catch (Exception exception)
+{
+    logger.LogError(exception, "An error occured with the database migration.");
 
-// }
+}
 
 app.Run();

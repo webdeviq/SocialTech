@@ -8,9 +8,11 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import { Post as PostInterface } from "../../models/Post";
+import { Post as PostInterface } from "../../models/post.ts";
 import { choosePostMediaImage } from "../../helper/imagepicker";
-import ThumbUpOffAltOutlinedIcon from "@mui/icons-material/ThumbUpOffAltOutlined";
+// import ThumbUpOffAltOutlinedIcon from "@mui/icons-material/ThumbUpOffAltOutlined";
+import { Link } from "react-router-dom";
+import { postAnswerText } from "../../helper/postanswers.ts";
 
 interface Props {
   post: PostInterface;
@@ -29,7 +31,7 @@ const Post: React.FC<Props> = (props: Props) => {
         }
         title={post.title}
         titleTypographyProps={{
-          sx: { fontWeight: "bold", color: "primary.dark", fontSize: "1.3rem" },
+          sx: { fontWeight: "bold", color: "primary.dark", fontSize: "1rem" },
         }}
       />
       <CardMedia
@@ -46,7 +48,7 @@ const Post: React.FC<Props> = (props: Props) => {
         title={post.title}
       />
       <CardContent>
-        <Typography variant="h6" color="grey.700">
+        <Typography variant="h6" color="grey.700" fontWeight="bold">
           {post.description}
         </Typography>
         <Typography gutterBottom variant="caption" color="grey.800">
@@ -54,13 +56,19 @@ const Post: React.FC<Props> = (props: Props) => {
         </Typography>
       </CardContent>
       <CardActions>
-        <ThumbUpOffAltOutlinedIcon
+        <Typography variant="h6" sx={{mr: 2}}>{post.postAnswers.length} {postAnswerText(post.postAnswers.length)}</Typography>
+        {/* <ThumbUpOffAltOutlinedIcon
           fill="outlined"
           onClick={() => console.log("Post Liked")}
           fontSize="large"
           sx={{ mr: 5, cursor: "pointer" }}
-        />
-        <Button size="large" variant="contained">
+        /> */}
+        <Button
+          component={Link}
+          to={`/posts/${post.id}`}
+          size="large"
+          variant="contained"
+        >
           View Post
         </Button>
       </CardActions>

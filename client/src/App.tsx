@@ -1,13 +1,15 @@
 import { useState } from "react";
-import PostList from "./components/post/PostList";
-//test
+
 import Header from "./components/header/Header";
 import {
   Container,
   createTheme,
   CssBaseline,
   ThemeProvider,
-} from "@mui/material"; 
+} from "@mui/material";
+import { Outlet } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   const [darkMode, setDarkMode] = useState<boolean>(false);
@@ -28,10 +30,11 @@ const App = () => {
   };
   return (
     <ThemeProvider theme={theme}>
+      <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
       <CssBaseline />
       <Header darkMode={darkMode} onHandleThemeChange={onHandleThemeChange} />
       <Container>
-        <PostList />
+        <Outlet />
       </Container>
     </ThemeProvider>
   );
