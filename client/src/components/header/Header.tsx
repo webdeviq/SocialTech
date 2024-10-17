@@ -6,18 +6,18 @@ import {
   Box,
   List,
   ListItem,
-  InputBase,
-  Paper,
-  IconButton,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { getCookie } from "../../helper/getcookie";
 
 const navStyles = {
   color: "inherit",
+  
   textDecoration: "none",
   typography: "h6",
+
+  width: "7rem",
   "&:hover": {
     color: "grey.500",
   },
@@ -26,10 +26,11 @@ const navStyles = {
   },
 };
 
-// const midLinks = [{ path: "/posts", text: "all posts" }];
-
+const USERCOOKIE = "USERCOOKIE";
 const rightLinks = [
-  { path: "/register", text: "register" },
+  { path: "/myposts", text: "Posts" },
+  { path: "/newpost", text: "Create" },
+  { path: "/register", text: "Sign Up" },
   { path: "/login", text: "login" },
 ];
 
@@ -41,7 +42,7 @@ const Header: React.FC<Props> = (props: Props) => {
   const { onHandleThemeChange, darkMode } = props;
 
   return (
-    <AppBar position="static" sx={{ mb: 4 }}>
+    <AppBar position="sticky" sx={{ mb: 4 }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Typography component={NavLink} to="/" variant="h6" sx={navStyles}>
@@ -49,39 +50,25 @@ const Header: React.FC<Props> = (props: Props) => {
           </Typography>
           <Switch checked={darkMode} onChange={onHandleThemeChange} />
         </Box>
-        {/* <List sx={{ display: "flex" }}>
-          {midLinks.map(({ path, text }) => (
-            <ListItem component={NavLink} to={path} sx={navStyles}>
-              {text.toUpperCase()}
-            </ListItem>
-          ))} */}
-        <Paper
-          component="form"
-          onSubmit={(event: React.FormEvent) => {
-            event.preventDefault();
-            console.log("Submitted Search...");
-          }}
-          sx={{
-            height: 1,
-            width: 300,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-evenly",
-          }}
-        >
-          <InputBase placeholder="Search" sx={{ height: 10, pl: "5px" }} />
-          <IconButton type="submit" aria-label="search">
-            <SearchIcon />
-          </IconButton>
-        </Paper>
-        {/* </List> */}
+
         <Box>
           <List sx={{ display: "flex" }}>
-            {rightLinks.map(({ path, text }) => (
-              <ListItem component={NavLink} key={text} to={path} sx={navStyles}>
-                {text.toUpperCase()}
-              </ListItem>
-            ))}
+            {rightLinks.map(({ path, text }) => {
+              if (text === "Create" && !getCookie(USERCOOKIE)) return;
+              if (text === "Posts" && !getCookie(USERCOOKIE)) return;  
+              return (
+                <ListItem
+
+                  component={NavLink}
+                  key={text}
+                  to={path}
+                  sx={navStyles}
+                  
+                >
+                  {text.toUpperCase()}
+                </ListItem>
+              );
+            })}
           </List>
         </Box>
       </Toolbar>

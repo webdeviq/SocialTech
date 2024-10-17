@@ -14,7 +14,6 @@ import "react-toastify/dist/ReactToastify.css";
 const App = () => {
   const [darkMode, setDarkMode] = useState<boolean>(false);
 
-  // theme object and options
   const darkorlightpalette = darkMode ? "dark" : "light";
   const theme = createTheme({
     palette: {
@@ -28,12 +27,13 @@ const App = () => {
   const onHandleThemeChange = () => {
     setDarkMode((prevThemeState) => !prevThemeState);
   };
+
   return (
     <ThemeProvider theme={theme}>
       <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
       <CssBaseline />
       <Header darkMode={darkMode} onHandleThemeChange={onHandleThemeChange} />
-      <Container>
+      <Container maxWidth={false}>
         <Outlet />
       </Container>
     </ThemeProvider>

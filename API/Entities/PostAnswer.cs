@@ -10,9 +10,11 @@ namespace API.Entities
         public DateTime AnswerDate { get; set; }
         public bool AnswerAccepted { get; set; } = false;
         public DateTime? AnswerAcceptedDate { get; set; }
-        public Post Post { get; set; } = new();
         [ForeignKey("PostId")]
         public int PostId { get; set; }
+        // A post answer cannot exist without a Post!
+        public Post Post { get; set; } = new();
+        
         [ForeignKey("UserId")]
         public int UserId { get; set; }
         public User AnsweredBy { get; set; } = null!;

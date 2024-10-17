@@ -1,91 +1,60 @@
 using API.Data;
 using API.Dtos;
+using API.Dtos.Post;
 using API.Entities;
+using API.Extensions;
+using API.RequestHelpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    public class PostsController : BaseApiController
+    public class PostsController(SocialTechContext context) : BaseApiController
     {
-        private readonly SocialTechContext _context;
-        public PostsController(SocialTechContext context)
-        {
-            this._context = context;
 
-        }
+        private readonly SocialTechContext _context = context;
 
         [HttpGet]
-        public async Task<ActionResult<List<PostDto>>> GetAllPosts()
+        public async Task<ActionResult<List<PostDto>>> GetAllPosts([FromQuery] PostParams postParams)
         {
 
-            List<PostDto> postDtos = await _context.Posts.Include(post => post.PostOwner)
-            .Select(element => new PostDto
-            {
-                Category = element.Category.CategoryEnum.ToString(),
-                Description = element.Description,
-                Id = element.Id,
-                Likes = element.Likes,
-                Title = element.Title,
-                UploadedOn = element.PostDate,
-                PostOwner = new UserDto
-                {
-                    Email = element.PostOwner.Email,
-                    FirstName = element.PostOwner.FirstName,
-                    LastName = element.PostOwner.LastName,
-                    Id = element.PostOwner.Id,
-                },
-                PostAnswers = element.Answers.Select((answer) => new PostAnswerDto
-                {
-                    Id = answer.Id,
-                    Answer = answer.Answer,
-                    AnswerAccepted = answer.AnswerAccepted,
-                    AnswerDate = answer.AnswerDate,
-                    AnswerAcceptedDate = answer.AnswerAcceptedDate,
-                    AnsweredBy = answer.AnsweredBy.FirstName + ' ' + answer.AnsweredBy.LastName,
-                    PostId = element.Id,
-                }).ToList(),
-            }).ToListAsync();
-            return Ok(postDtos);
+            var query = _context.Posts
+            .Include(p => p.Category)
+            .Sort(postParams.OrderBy)
+            .Search(postParams.SearchTerm)
+            .Filter(postParams.Categories)
+            .AsQueryable();
+
+            var postsResult = await PagedList<Post>.ToPagedList(query, postParams.PageNumber,
+            postParams.PageSize);
+            Response.AddPaginationHeader(postsResult.MetaData);
+            return postsResult.MapGetAllPosts();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<PostDto>> GetOnePost(int id)
         {
-             Post? post = await _context.Posts.FindAsync(id);
-            if (post == null) return NotFound();
+            Post? post = await FindAsync(id);
+            if (post == null) return NotFound(new ProblemDetails { Title = "Requested post does not exist" });
+            PostDto result = DtoMapper.MapGetOnePost(post);
+            return Ok(result);
+        }
 
-            PostDto postDto = await _context.Posts
-                .Include(p => p.PostOwner)
-                .Where(result => result.Id == id)
-                .Select(element => new PostDto
-                {
-                    Category = element.Category.CategoryEnum.ToString(),
-                    Description = element.Description,
-                    Id = element.Id,
-                    Likes = element.Likes,
-                    Title = element.Title,
-                    UploadedOn = element.PostDate,
-                    PostOwner = new UserDto
-                    {
-                        Email = element.PostOwner.Email,
-                        FirstName = element.PostOwner.FirstName,
-                        LastName = element.PostOwner.LastName,
-                        Id = element.PostOwner.Id,
-                    },
-                    PostAnswers = element.Answers.Select((answer) => new PostAnswerDto
-                    {
-                        Id = answer.Id,
-                        Answer = answer.Answer,
-                        AnswerAccepted = answer.AnswerAccepted,
-                        AnswerDate = answer.AnswerDate,
-                        AnsweredBy = answer.AnsweredBy.FirstName + ' ' + answer.AnsweredBy.LastName,
-                        PostId = element.Id,
 
-                    }).ToList(),
-                }).FirstAsync();
-            return Ok(postDto);
+        private async Task<Post> FindAsync(int postId)
+        {
+            Post? result = await _context.Posts.Include(p => p.PostOwner).Where(p => p.Id == postId).FirstOrDefaultAsync();
+            if (result != null) return result;
+            return null!;
+        }
 
+        [HttpGet("filters")]
+        public async Task<IActionResult> GetFilters()
+        {
+            List<string> categories = await _context.Posts.
+            Select(element => element.Category.CategoryName).Distinct().ToListAsync();
+            return Ok(new { categories });
         }
     }
 }

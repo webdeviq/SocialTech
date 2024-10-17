@@ -13,6 +13,7 @@ import { choosePostMediaImage } from "../../helper/imagepicker";
 // import ThumbUpOffAltOutlinedIcon from "@mui/icons-material/ThumbUpOffAltOutlined";
 import { Link } from "react-router-dom";
 import { postAnswerText } from "../../helper/postanswers.ts";
+import { dateParser } from "../../helper/date.ts";
 
 interface Props {
   post: PostInterface;
@@ -20,16 +21,15 @@ interface Props {
 
 const Post: React.FC<Props> = (props: Props) => {
   const { post } = props;
-
   return (
-    <Card>
+    <Card sx={{ ml: 8, mb: 1, pl: 2, pb: 2, width: "60rem" }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: "primary.light" }}>
             {post.category.charAt(0).toUpperCase()}
           </Avatar>
         }
-        title={post.title}
+        title={post.category}
         titleTypographyProps={{
           sx: { fontWeight: "bold", color: "primary.dark", fontSize: "1rem" },
         }}
@@ -48,15 +48,28 @@ const Post: React.FC<Props> = (props: Props) => {
         title={post.title}
       />
       <CardContent>
-        <Typography variant="h6" color="grey.700" fontWeight="bold">
+        <Typography
+          variant="subtitle1"
+          color="grey.700"
+          fontWeight="bold"
+          sx={{
+            pb: 1,
+            textWrap: "wrap",
+            maxWidth: "60rem",
+            overflow: "hidden",
+          }}
+        >
           {post.description}
         </Typography>
         <Typography gutterBottom variant="caption" color="grey.800">
-          Uploaded By {post.postOwner.firstName} {post.postOwner.lastName}
+          Uploaded By {post.postOwner.firstName} {post.postOwner.lastName} On{" "}
+          {dateParser(post.uploadedOn.toString())}
         </Typography>
       </CardContent>
       <CardActions>
-        <Typography variant="h6" sx={{mr: 2}}>{post.postAnswers.length} {postAnswerText(post.postAnswers.length)}</Typography>
+        <Typography variant="caption" sx={{ mr: 2 }}>
+          { postAnswerText(post.postAnswers)}
+        </Typography>
         {/* <ThumbUpOffAltOutlinedIcon
           fill="outlined"
           onClick={() => console.log("Post Liked")}

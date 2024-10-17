@@ -4,10 +4,11 @@ import { PostCategory } from "../models/post";
  * @param category
  * accepts a category of a post and returns the image url for the category.
  */
+
 export const choosePostMediaImage = (category: PostCategory): string => {
   switch (category) {
-    case "REACT":
-      return "/images/react.jpg";
+    case "React":
+      return "images/react.jpg";
     case "JAVASCRIPT":
       return "/images/javascript.jpg";
     case "TYPESCRIPT":
@@ -39,7 +40,7 @@ export const choosePostMediaImage = (category: PostCategory): string => {
     case "REST":
       return "/images/rest.jpg";
     case "SOAP":
-      return "/images/soap.jpg";
+      return "/images/soap.png";
     case "XML":
       return "/images/xml.jpg";
     case "JSON":

@@ -16,29 +16,33 @@ import {
   Typography,
 } from "@mui/material";
 import DoneOutlineSharpIcon from "@mui/icons-material/DoneOutlineSharp";
-import { Post } from "../models/post";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
-import { dateParser } from "../helper/date";
 
-import agent from "../agent/agent";
-import NotFound from "./NotFound";
-import LoadingSpinner from "../components/loadingspinner/LoadingSpinner";
+import NotFound from "../../pages/NotFound";
+import LoadingSpinner from "../loadingspinner/LoadingSpinner";
 
-const PostDetailPage = () => {
+import { getOnePostAsync, postsSelectors } from "./postSlice";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import { dateParser } from "../../helper/date";
+
+const PostDetail = () => {
+  const dispatch = useAppDispatch();
+  const { status } = useAppSelector((state) => state.post);
   const { id } = useParams<{ id: string }>();
-  const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
+  const post = useAppSelector((state) =>
+    postsSelectors.selectById(state, parseInt(id!))
+  );
 
   useEffect(() => {
-    if (!id) return;
-    agent.Post.postdetail(parseInt(id))
-      .then((result) => setPost(result))
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
-  }, [id]);
-  if (loading) return <LoadingSpinner message="Loading post..."/>;
+    if (!post) {
+      dispatch(getOnePostAsync(parseInt(id!)));
+    }
+  }, [post, dispatch, id]);
+
+  if (status.includes("pending"))
+    return <LoadingSpinner message="Loading post..." />;
   if (!post) return <NotFound />;
 
   return (
@@ -139,4 +143,4 @@ const PostDetailPage = () => {
   );
 };
 
-export default PostDetailPage;
+export default PostDetail;

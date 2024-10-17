@@ -5,7 +5,7 @@ const NotFound = () => {
   return (
     <Container component={Paper} sx={{ height: 400 }}>
       <Typography gutterBottom variant="h3">
-        The resource you're looking for cannot be found...
+        Oops couldn't find what your looking for in this app.
       </Typography>
       <Divider />
       <Button fullWidth component={Link} to="/">

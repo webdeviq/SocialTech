@@ -1,36 +1,32 @@
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
-import { Post as PostInterface } from "../../models/post.ts";
 import Post from "./Post.tsx";
-import { useEffect, useState } from "react";
-import agent from "../../agent/agent.ts";
-import LoadingSpinner from "../loadingspinner/LoadingSpinner.tsx";
 
-const PostList = () => {
-  const [posts, setPosts] = useState<PostInterface[]>([]);
-  const [loading, setLoading] = useState(true);
+import { useAppSelector } from "../../store/store.ts";
+import React from "react";
+import PostCardSkeleton from "../skeleton/PostCardSkeleton.tsx";
+import { Post as PostModel } from "../../models/post.ts";
 
-  useEffect(() => {
-    agent.Post.postlist()
-      .then((response) => setPosts(response))
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
-  }, []);
-  console.log(loading);
-  if (loading) return <LoadingSpinner message="Loading posts..." />;
+interface Props {
+  posts: PostModel[];
+}
 
-  if (posts.length <= 0) {
-    return <Typography variant="h4">No Posts To Show Yet....</Typography>;
-  }
-
+const PostList: React.FC<Props> = (props: Props) => {
+  const { posts } = props;
+  const { postsLoaded } = useAppSelector((state) => state.post);
+  
   return (
-    <Grid container spacing={5}>
-      {posts.map((post) => (
-        <Grid item xs={12} key={post.id}>
-          <Post post={post} />
+    <React.Fragment>
+      <Box sx={{ ml: 25 }}>
+        <Grid container>
+          {posts.map((post) => (
+            <Grid item xs={12} key={post.id}>
+              {!postsLoaded ? <PostCardSkeleton /> : <Post post={post} />}
+            </Grid>
+          ))}
         </Grid>
-      ))}
-    </Grid>
+      </Box>
+    </React.Fragment>
   );
 };
 

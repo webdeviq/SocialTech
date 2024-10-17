@@ -1,5 +1,5 @@
 export type PostCategory =
-  | "REACT"
+  | "React"
   | "JAVASCRIPT"
   | "TYPESCRIPT"
   | "CSHARP"
@@ -47,4 +47,12 @@ export interface PostAnswer {
   postId: number;
   answeredBy: string;
   answerAcceptedDate: string;
+}
+
+export interface PostParams {
+  orderBy: string;
+  searchTerm?: string;
+  categories: string[];
+  pageNumber: number;
+  pageSize: number;
 }
