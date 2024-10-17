@@ -8,6 +8,7 @@ namespace API.Data
 {
   public class SocialTechContext(DbContextOptions options) : IdentityDbContext(options)
   {
+    // Test change.
     // protected override void OnModelCreating(ModelBuilder modelBuilder)
     // {
     //   modelBuilder.Entity<Category>().HasData(
